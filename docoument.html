@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1400">
+    <title>NPTEL Results 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --elite: #cd7f32;
+            
+            /* Light Mode */
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --bg-header: #ffffff;
+            --text-main: #222222;
+            --text-sub: #555555;
+            --header-text: #003366;
+            --section-grad-start: #ffffff;
+            --section-grad-end: #e3f2fd;
+            --shadow-color: rgba(0,0,0,0.1);
+            --welcome-bg: #ffffff;
+            --icon-fill: #ccc;
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --detail-box-bg: #f8f9fa;
+        }
+
+        /* --- DARK MODE --- */
+        body.dark-mode {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --bg-header: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-sub: #b0b0b0;
+            --header-text: #90caf9;
+            --section-grad-start: #1e1e1e;
+            --section-grad-end: #1a2634;
+            --shadow-color: rgba(0,0,0,0.5);
+            --welcome-bg: #121212;
+            --icon-fill: #555;
+            --modal-bg: rgba(18, 18, 18, 0.98);
+            --detail-box-bg: #2c2c2c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* --- WELCOME SCREEN --- */
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--welcome-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease;
+        }
+
+        #welcome-screen h1 {
+            font-size: 3.5rem;
+            color: var(--text-main);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- FULL SCREEN POPUP (MODAL) --- */
+        #student-modal {
+            display: none; 
+            position: fixed;
+            z-index: 20000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-bg);
+            backdrop-filter: blur(15px); /* Strong Blur */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content {
+            text-align: center;
+            width: 90%;
+            max-width: 700px;
+        }
+
+        .modal-image-box {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 25px auto;
+            border-radius: 20px;
+            border: 6px solid; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-body);
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-image-box svg {
+            width: 60%; height: 60%; fill: var(--icon-fill);
+        }
+
+        #modal-name {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 10px 0;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #modal-score {
+            font-size: 2.5rem;
+            color: var(--header-text);
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        /* --- NEW: DETAILED MARKS BOXES --- */
+        .modal-details {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .detail-box {
+            background-color: var(--detail-box-bg);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            min-width: 180px;
+            border: 1px solid var(--shadow-color);
+        }
+
+        .detail-label {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 2rem;
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        #modal-badge {
+            font-size: 1.4rem;
+            padding: 12px 30px;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 40px;
+            right: 50px;
+            font-size: 3.5rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .close-btn:hover { transform: scale(1.1); color: red; }
+
+
+        /* --- HEADER & LAYOUT --- */
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: var(--bg-header);
+            box-shadow: 0 2px 10px var(--shadow-color);
+            margin-bottom: 20px;
+        }
+        header h1 { margin: 0; color: var(--header-text); font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; }
+        header h2 { margin: 15px 0 0 0; color: var(--text-sub); font-size: 1.8rem; font-weight: 500; }
+
+        #main-container { display: none; width: 1300px; margin: 0 auto; padding-bottom: 100px; }
+
+        .section-box {
+            background: linear-gradient(180deg, var(--section-grad-start) 0%, var(--section-grad-end) 100%);
+            border-radius: 20px; padding: 50px; margin: 50px auto;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            width: 100%; box-sizing: border-box;
+        }
+
+        .category-title { text-align: center; font-size: 2.5rem; color: var(--text-main); margin-bottom: 50px; text-transform: uppercase; font-weight: bold; }
+
+        .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; }
+
+        /* --- CARD --- */
+        .card {
+            background: var(--bg-card);
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: transform 0.3s ease; overflow: hidden; cursor: pointer;
+            border-width: 5px; border-style: solid; border-radius: 15px; padding-bottom: 20px;
+        }
+        .card:hover { transform: translateY(-10px) scale(1.02); }
+        .card.gold-border { border-color: var(--gold); }
+        .card.silver-border { border-color: var(--silver); }
+        .card.elite-border { border-color: var(--elite); }
+
+        .image-container {
+            width: 100%; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center;
+            overflow: hidden; margin-bottom: 15px; border-bottom: 1px solid var(--shadow-color);
+        }
+        .student-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .default-icon { width: 60%; height: 60%; fill: var(--icon-fill); margin-top: 10px; }
+
+        .name { font-weight: 800; color: var(--text-main); line-height: 1.2; padding: 0 10px; }
+        .score { color: var(--text-sub); font-weight: 600; margin-top: 5px; }
+        .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: bold; font-size: 0.85rem; margin-top: 10px; }
+        .bg-gold { background: #d4af37; color: #000; }
+        .bg-silver { background: #a9a9a9; color: #000; }
+        .bg-elite { background: #b87333; }
+
+        /* Sizes */
+        .card-standard { width: 220px; height: 320px; }
+        .card-standard .image-container { height: 180px; }
+        .card-standard .name { font-size: 1.2rem; }
+        
+        .card-topper { width: 350px; height: 480px; border-width: 8px; }
+        .card-topper .image-container { height: 280px; }
+        .card-topper .name { font-size: 2rem; margin-bottom: 5px; }
+        .card-topper .score { font-size: 1.5rem; }
+        .card-topper .badge { font-size: 1.1rem; padding: 10px 20px; }
+
+        /* --- TOGGLE SWITCH --- */
+        .toggle-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; transform: scale(1.4); }
+        .switch-checkbox { display: none; }
+        .switch-label {
+            display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+            width: 50px; height: 26px;
+            background: rgba(0, 0, 0, 0.05); backdrop-filter: blur(5px);
+            border: 2px solid rgba(0, 0, 0, 0.2); border-radius: 999px;
+            position: relative; transition: all 0.3s ease; padding: 2px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .switch-label .ball {
+            background-color: #fff; width: 22px; height: 22px; border-radius: 50%;
+            position: absolute; top: 2px; left: 2px;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2;
+        }
+        .fa-sun { color: #ff8c00; font-size: 14px; position: absolute; right: 7px; top: 6px; }
+        .fa-moon { color: #ffd700; font-size: 14px; position: absolute; left: 7px; top: 6px; opacity: 0; }
+        .switch-checkbox:checked + .switch-label { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); }
+        .switch-checkbox:checked + .switch-label .ball { transform: translateX(24px); background-color: #fff; }
+        .switch-checkbox:checked + .switch-label .fa-moon { opacity: 1; }
+        .switch-checkbox:checked + .switch-label .fa-sun { opacity: 0; }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-screen"><h1>Welcome</h1></div>
+
+    <div id="student-modal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <div class="modal-image-box" id="modal-img-box">
+                </div>
+            <div id="modal-name">Student Name</div>
+            <div id="modal-score">Total: 00%</div>
+
+            <div class="modal-details">
+                <div class="detail-box">
+                    <div class="detail-label">Online Assignment</div>
+                    <div class="detail-value" id="modal-assign">00</div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-label">Proctored Exam</div>
+                    <div class="detail-value" id="modal-exam">00</div>
+                </div>
+            </div>
+
+            <div id="modal-badge" class="badge">Rank</div>
+        </div>
+    </div>
+
+    <div class="toggle-container">
+        <input type="checkbox" class="switch-checkbox" id="theme-toggle" onclick="toggleTheme()">
+        <label class="switch-label" for="theme-toggle">
+            <i class="fas fa-moon"></i><i class="fas fa-sun"></i><div class="ball"></div>
+        </label>
+    </div>
+
+    <div id="main-container">
+        <header>
+            <h1>NPTEL JAVA RESULT 2025</h1>
+            <h2>COMPUTER SCIENCE ENGINEERING DEPARTMENT</h2>
+        </header>
+
+        <div class="section-box">
+            <div class="category-title" style="color: var(--gold);">Toppers</div>
+            <div class="grid">
+                <div class="card card-topper gold-border" onclick="openModal(this, 'Nitai Chanda', '95%', 'Elite + Gold', 'gold', '24.94', '70.5')">
+                    <div class="image-container"><img src="Nitai.jpg" class="student-photo" alt="Nitai" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Nitai Chanda</div><div class="score">Score: 95%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-topper gold-border" onclick="openModal(this, 'Shankadeep Dey', '95%', 'Elite + Gold', 'gold', '24.94', '70.5')">
+                    <div class="image-container"><img src="Shankadeep.jpg" class="student-photo" alt="Shankadeep" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Shankadeep Dey</div><div class="score">Score: 95%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-topper gold-border" onclick="openModal(this, 'Isha Dutta', '95%', 'Elite + Gold', 'gold', '24.88', '69.75')">
+                    <div class="image-container"><img src="Isha.jpg" class="student-photo" alt="Isha" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Isha Dutta</div><div class="score">Score: 95%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-topper gold-border" onclick="openModal(this, 'MD Shamim Hussain', '95%', 'Elite + Gold', 'gold', '25', '69.5')">
+                    <div class="image-container"><img src="Shamim.jpg" class="student-photo" alt="Shamim" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">MD Shamim Hussain</div><div class="score">Score: 95%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-box">
+            <div class="category-title" style="color: var(--gold);">Elite + Gold</div>
+            <div class="grid">
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Ritu Kumari Paswan', '94%', 'Elite + Gold', 'gold', '25', '68.75')">
+                    <div class="image-container"><img src="Ritu.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Ritu Kumari Paswan</div><div class="score">Score: 94%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Arka Sadhu', '92%', 'Elite + Gold', 'gold', '24.88', '67.5')">
+                    <div class="image-container"><img src="Arka.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Arka Sadhu</div><div class="score">Score: 92%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Monalisa Ghanty', '92%', 'Elite + Gold', 'gold', '24.88', '67.5')">
+                    <div class="image-container"><img src="Monalisa.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Monalisa Ghanty</div><div class="score">Score: 92%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Sagupta Naz', '92%', 'Elite + Gold', 'gold', '23.66', '68.25')">
+                    <div class="image-container"><img src="Sagupta.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Sagupta Naz</div><div class="score">Score: 92%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Sanjib Ruj', '92%', 'Elite + Gold', 'gold', '24.81', '67.5')">
+                    <div class="image-container"><img src="Sanjib.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Sanjib Ruj</div><div class="score">Score: 92%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Sudipta Sengupta', '92%', 'Elite + Gold', 'gold', '24.94', '67.25')">
+                    <div class="image-container"><img src="Sudipta.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Sudipta Sengupta</div><div class="score">Score: 92%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Anshu Kumari', '91%', 'Elite + Gold', 'gold', '25', '66')">
+                    <div class="image-container"><img src="Anshu.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Anshu Kumari</div><div class="score">Score: 91%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Shivani Kumari Shaw', '91%', 'Elite + Gold', 'gold', '24.35', '66.5')">
+                    <div class="image-container"><img src="Shivani.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Shivani Kumari Shaw</div><div class="score">Score: 91%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Satyajit Nath', '91%', 'Elite + Gold', 'gold', '24.81', '65.75')">
+                    <div class="image-container"><img src="Satyajit.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Satyajit Nath</div><div class="score">Score: 91%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Pritilata Panda', '91%', 'Elite + Gold', 'gold', '22.38', '68.75')">
+                    <div class="image-container"><img src="Pritilata.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Pritilata Panda</div><div class="score">Score: 91%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Dhrubajit Mahuri', '91%', 'Elite + Gold', 'gold', '24.94', '65.75')">
+                    <div class="image-container"><img src="Dhrubajit.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Dhrubajit Mahuri</div><div class="score">Score: 91%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Shyam Sunder Roy', '90%', 'Elite + Gold', 'gold', '22.97', '67.5')">
+                    <div class="image-container"><img src="Shyam.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Shyam Sunder Roy</div><div class="score">Score: 90%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+                <div class="card card-standard gold-border" onclick="openModal(this, 'Sandipan Mondal', '90%', 'Elite + Gold', 'gold', '25', '64.5')">
+                    <div class="image-container"><img src="Sandipan.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Sandipan Mondal</div><div class="score">Score: 90%</div><div class="badge bg-gold">Elite + Gold</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-box">
+            <div class="category-title" style="color: var(--silver);">Elite + Silver</div>
+            <div class="grid">
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Subhadeep Mukherjee', '88%', 'Elite + Silver', 'silver', '24.72', '63')">
+                    <div class="image-container"><img src="Subhadeep.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Subhadeep Mukherjee</div><div class="score">Score: 88%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Shovona Chakraborty', '87%', 'Elite + Silver', 'silver', '23.81', '62.75')">
+                    <div class="image-container"><img src="Shovona.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Shovona Chakraborty</div><div class="score">Score: 87%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Shriyut Janardan', '87%', 'Elite + Silver', 'silver', '23.03', '64.25')">
+                    <div class="image-container"><img src="Shriyut.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Shriyut Janardan</div><div class="score">Score: 87%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Shivam Yadav', '83%', 'Elite + Silver', 'silver', '24.88', '58.5')">
+                    <div class="image-container"><img src="Shivam.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Shivam Yadav</div><div class="score">Score: 83%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Aadrita Kumbhakar', '83%', 'Elite + Silver', 'silver', '24.35', '59')">
+                    <div class="image-container"><img src="Aadrita.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Aadrita Kumbhakar</div><div class="score">Score: 83%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Akash Mondal', '81%', 'Elite + Silver', 'silver', '24.22', '56.75')">
+                    <div class="image-container"><img src="Akash.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Akash Mondal</div><div class="score">Score: 81%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Sonu Yadav', '79%', 'Elite + Silver', 'silver', '23.81', '55.25')">
+                    <div class="image-container"><img src="Sonu.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Sonu Yadav</div><div class="score">Score: 79%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Aloke Srivastav', '78%', 'Elite + Silver', 'silver', '25', '53.25')">
+                    <div class="image-container"><img src="Aloke.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Aloke Srivastav</div><div class="score">Score: 78%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Kanchan Singh', '77%', 'Elite + Silver', 'silver', '24.75', '52.5')">
+                    <div class="image-container"><img src="Kanchan.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Kanchan Singh</div><div class="score">Score: 77%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Nilayan Dey', '75%', 'Elite + Silver', 'silver', '24.78', '50.25')">
+                    <div class="image-container"><img src="Nilayan.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Nilayan Dey</div><div class="score">Score: 75%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+                <div class="card card-standard silver-border" onclick="openModal(this, 'Bidyadhar Mallick', '75%', 'Elite + Silver', 'silver', '24.75', '50.25')">
+                    <div class="image-container"><img src="Bidyadhar.jpg" class="student-photo" onerror="this.style.display='none';this.parentNode.innerHTML='<svg class=\'default-icon\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>'"></div>
+                    <div class="name">Bidyadhar Mallick</div><div class="score">Score: 75%</div><div class="badge bg-silver">Elite + Silver</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-box">
+            <div class="category-title" style="color: var(--elite);">Elite</div>
+            <div class="grid">
+                <div class="card card-standard elite-border" onclick="openModal(this, 'Aman Kumar Mahato', '62%', 'Elite', 'elite', '17.16', '44.75')">
+                    <div class="image-container"><svg class="default-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                    <div class="name">Aman Kumar Mahato</div><div class="score">Score: 62%</div><div class="badge bg-elite">Elite</div>
+                </div>
+                <div class="card card-standard elite-border" onclick="openModal(this, 'Utkarsh Kumar Thapa', '61%', 'Elite', 'elite', '20.16', '40.5')">
+                    <div class="image-container"><svg class="default-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                    <div class="name">Utkarsh Kumar Thapa</div><div class="score">Score: 61%</div><div class="badge bg-elite">Elite</div>
+                </div>
+                <div class="card card-standard elite-border" onclick="openModal(this, 'Ashok Kumar Roy', '61%', 'Elite', 'elite', '24.56', '36.26')">
+                    <div class="image-container"><svg class="default-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                    <div class="name">Ashok Kumar Roy</div><div class="score">Score: 61%</div><div class="badge bg-elite">Elite</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Welcome Screen Logic
+        window.onload = function() {
+            setTimeout(function() {
+                var welcomeScreen = document.getElementById('welcome-screen');
+                var mainContainer = document.getElementById('main-container');
+
+                welcomeScreen.style.opacity = 0;
+                
+                setTimeout(function() {
+                    welcomeScreen.style.display = 'none';
+                    mainContainer.style.display = 'block';
+                    document.body.style.overflowX = 'auto'; 
+                }, 800);
+            }, 3000); 
+        }
+
+        // Dark Mode Toggle Logic
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+        }
+
+        // --- FULL SCREEN MODAL LOGIC (UPDATED WITH PHOTO & MARKS) ---
+        function openModal(element, name, score, rank, type, assign, exam) {
+            const modal = document.getElementById('student-modal');
+            const modalName = document.getElementById('modal-name');
+            const modalScore = document.getElementById('modal-score');
+            const modalBadge = document.getElementById('modal-badge');
+            const modalImgBox = document.getElementById('modal-img-box');
+            const modalAssign = document.getElementById('modal-assign');
+            const modalExam = document.getElementById('modal-exam');
+            
+            // Set Text Data
+            modalName.innerText = name;
+            modalScore.innerText = 'Total: ' + score;
+            modalBadge.innerText = rank;
+            modalAssign.innerText = assign;
+            modalExam.innerText = exam;
+
+            // Set Image (Clone from Clicked Card)
+            const img = element.querySelector('img');
+            const svg = element.querySelector('svg');
+            
+            modalImgBox.innerHTML = ''; // Clear previous
+            
+            if (img && img.style.display !== 'none') {
+                const newImg = document.createElement('img');
+                newImg.src = img.src;
+                // Ensures full box coverage in modal
+                newImg.style.width = '100%';
+                newImg.style.height = '100%';
+                newImg.style.objectFit = 'cover';
+                modalImgBox.appendChild(newImg);
+            } else {
+                // If using SVG fallback
+                if(svg) {
+                    let newSvg = svg.cloneNode(true);
+                    newSvg.style.width = '60%'; 
+                    newSvg.style.height = '60%'; 
+                    newSvg.style.fill = getComputedStyle(document.documentElement).getPropertyValue('--icon-fill');
+                    modalImgBox.appendChild(newSvg);
+                }
+            }
+
+            // Set Colors (Border & Badge)
+            let color = '#333';
+            
+            // Remove old classes
+            modalBadge.classList.remove('bg-gold', 'bg-silver', 'bg-elite');
+            
+            if (type === 'gold') {
+                color = '#FFD700';
+                modalBadge.classList.add('bg-gold');
+            } else if (type === 'silver') {
+                color = '#C0C0C0';
+                modalBadge.classList.add('bg-silver');
+            } else {
+                color = '#cd7f32';
+                modalBadge.classList.add('bg-elite');
+            }
+
+            modalImgBox.style.borderColor = color;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('student-modal').style.display = 'none';
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('student-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
